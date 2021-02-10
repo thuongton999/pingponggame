@@ -10,3 +10,6 @@ Feature:
 - Gõ lệnh "exit" để thoát
 
 Ngoài ra thì trong game em đang test cái độ ổn định của nó nên em chưa cho quả bóng vào, mới di chuyển cái bar được thôi :3
+
+10/2/2021
+Copyright © by Thuongton999
