@@ -1,8 +1,7 @@
 # Ping Pong Game
 Ping Pong Game using Socket and Threading in Python
 
-Hi, em vừa mới thử làm quả game Ping Pong bằng socket & threading trong Python
-Giúp em test nha <3
+Hi, em vừa mới thử làm quả game Ping Pong bằng socket & threading trong Python. Giúp em test nha <3
 
 Feature:
 - Gõ lệnh "openserver" để mở server trên máy (mỗi server chỉ kết nối được 1 máy khác)
