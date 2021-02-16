@@ -74,10 +74,10 @@ def CommandLine():
 
 
 def Prompt():
-    connection = Server()
     while True:
         command = input("PingPongShell> ")
         if command == "openserver":
+            connection = Server()
             connection.openServer()
             while True:
                 client, address = connection.HOST.accept()
@@ -93,11 +93,11 @@ def Prompt():
             raise PingPongException(userEvent)
         elif command == "help":
             print("""Commands:
-openserver - Opens a server
-connect    - Connects to an existing server
-exit/quit  - Exits the shell
-help       - Prints this help page
-""")
+                openserver - Opens a server
+                connect    - Connects to an existing server
+                exit/quit  - Exits the shell
+                help       - Prints this help page
+                """)
         else:
             print("Command '" + command + """' not found
 Type 'help' for help.""")
@@ -146,7 +146,7 @@ class Player:
 
     def sendingRequest(self, host, ball_location):
         try:
-            location = "%s %s %s %s" % (self.location[1], ball_location[0], ball_location[1], self.point)
+            location = f"{self.location[1]} {ball_location[0]} {ball_location[1]} {self.point}"
             host.sendall(location.encode("utf-8"))
         except ConnectionResetError:
             print("Partner is disconnected")
