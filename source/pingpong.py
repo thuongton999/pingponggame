@@ -128,7 +128,7 @@ class Ball:
         elif self.location[0] <= player.location[0] + player.WIDTH + self.radius:	# player
             if player.location[1] <= self.location[1] <= player.location[1] + player.HEIGHT:
                 self.speed[0] = -self.speed[0]
-        elif self.location[0] >= competitor.location[0] - self.radius:				# competitor
+        elif self.location[0] >= competitor.location[0] - self.radius:	# competitor
             if competitor.location[1] <= self.location[1] <= competitor.location[1] + competitor.HEIGHT:
                 self.speed[0] = -self.speed[0]
 
