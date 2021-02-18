@@ -42,8 +42,8 @@ class Client:
 
     def connect(self):
         while True:
-            IP = input("Address: ")  # self.hostAddress
-            PORT = int(input("Port: "))  # self.PORT
+            IP = input("Address: ")         # self.hostAddress
+            PORT = int(input("Port: "))     # self.PORT
             try:
                 self.HOST.connect((IP, PORT))
                 print("Connected to", (IP, PORT))
@@ -64,7 +64,7 @@ def showInfo(port):
     print("Your PORT:", port, "\n-----------------------")
 
 
-def CommandLine():
+def showDeviceInfo():
     defaultPort = 12000
     if sys.platform == 'win32':
         os.system("cls")
@@ -81,7 +81,7 @@ def Prompt():
             connection.openServer()
             while True:
                 client, address = connection.HOST.accept()
-                if client:  # if client connected
+                if client:  # if client is connected
                     print("Connected by", address)
                     return connection.HOST, client
         elif command == "connect":
@@ -93,17 +93,16 @@ def Prompt():
             raise PingPongException(userEvent)
         elif command == "help":
             print("""Commands:
-openserver - Opens a server
-connect    - Connects to an existing server
-exit/quit  - Exits the shell
-help       - Prints this help page
-""")
+                    openserver - Opens a server
+                    connect    - Connects to an existing server
+                    exit/quit  - Exits the shell
+                    help       - Prints this help page""")
         else:
-            print("Command '" + command + """' not found
-Type 'help' for help.""")
+            print("Command '" + command + "' not found\nType 'help' for help.\n\n")
     return connection.HOST, False
 
 
+# Only run on server
 class Ball:
     def __init__(self, surface):
         self.radius = 10
@@ -117,17 +116,19 @@ class Ball:
         self.player_point = 0
 
     def isCollision(self, player, competitor, top, bottom, left, right):
-        if self.location[0] <= left + self.radius:
+        if self.location[0] <= left + self.radius:	# collision with left edge of screen
             self.speed[0] = -self.speed[0]
-        elif self.location[0] >= right - self.radius:
+        elif self.location[0] >= right - self.radius:	# collision with right edge of screen
             self.speed[0] = -self.speed[0]
             self.player_point += 1
+        # collision with top and bottom edge of screen
         elif self.location[1] <= top + self.radius or self.location[1] >= bottom - self.radius:
             self.speed[1] = -self.speed[1]
-        elif self.location[0] <= player.location[0] + player.WIDTH + self.radius:
+        # objects collision
+        elif self.location[0] <= player.location[0] + player.WIDTH + self.radius:	# player
             if player.location[1] <= self.location[1] <= player.location[1] + player.HEIGHT:
                 self.speed[0] = -self.speed[0]
-        elif self.location[0] >= competitor.location[0] - self.radius:
+        elif self.location[0] >= competitor.location[0] - self.radius:				# competitor
             if competitor.location[1] <= self.location[1] <= competitor.location[1] + competitor.HEIGHT:
                 self.speed[0] = -self.speed[0]
 
@@ -156,8 +157,8 @@ class Player:
             pygame.quit()
 
     def render(self):
-        WHITE = (255, 255, 255)
-        pygame.draw.rect(self.interface, WHITE, (self.location[0], self.location[1], self.WIDTH, self.HEIGHT))
+       	AQUA = (0, 255, 255)
+        pygame.draw.rect(self.interface, AQUA, (self.location[0], self.location[1], self.WIDTH, self.HEIGHT))
 
 
 class Competitor:
@@ -165,6 +166,7 @@ class Competitor:
         self.WIDTH, self.HEIGHT = 10, 100
         self.location = [970, 30]
         self.interface = surface
+        self.SCREEN_WIDTH, self.SCREEN_HEIGHT = self.interface.get_size()
         self.speed = 5
 
         self.ball_location = [10, 10]
@@ -178,7 +180,7 @@ class Competitor:
 
             self.location[1] = int(location[0])
             # ball_location[0] = midOfScreen + (midOfScreen - competitor_location)
-            self.ball_location[0] = 500 + (500 - int(location[1]))
+            self.ball_location[0] = self.SCREEN_WIDTH // 2 + (self.SCREEN_WIDTH // 2 - int(location[1]))
             self.ball_location[1] = int(location[2])
             self.point = int(location[3])
         except ConnectionResetError:
@@ -195,8 +197,8 @@ class Competitor:
             self.requestErrors = 1
 
     def render(self):
-        WHITE = (255, 255, 255)
-        pygame.draw.rect(self.interface, WHITE, (self.location[0], self.location[1], self.WIDTH, self.HEIGHT))
+        SALMON = (250, 128, 114)
+        pygame.draw.rect(self.interface, SALMON, (self.location[0], self.location[1], self.WIDTH, self.HEIGHT))
 
 
 class PingPong:
@@ -212,9 +214,10 @@ class PingPong:
             icon = pygame.image.load(os.path.join(PingPong.init_directory, "icon.png"))
         pygame.display.set_icon(icon)
 
-    def scoreBoard(self, player_point, competitor_point):
+    def renderScoreBoard(self, player_point, competitor_point):
         GREY = (128, 128, 128)
         MIDDLE = [self.WIDTH // 2, self.HEIGHT // 2]
+        locate = 50
 
         player_point = str(player_point)
         competitor_point = str(competitor_point)
@@ -226,8 +229,8 @@ class PingPong:
         renderPlayerPoint = render_font.render(player_point, True, GREY)
         renderCompetitorPoint = render_font.render(competitor_point, True, GREY)
 
-        self.screen.blit(renderPlayerPoint, (MIDDLE[0] - 100, MIDDLE[1] - 25))
-        self.screen.blit(renderCompetitorPoint, (MIDDLE[0] + 50, MIDDLE[1] - 25))
+        self.screen.blit(renderPlayerPoint, (MIDDLE[0] - (2 * locate), MIDDLE[1] - (locate // 4)))
+        self.screen.blit(renderCompetitorPoint, (MIDDLE[0] + locate, MIDDLE[1] - (locate // 4)))
 
     def start(self):
         pygame.init()
@@ -239,7 +242,7 @@ class PingPong:
         if server:  # server
             pygame.display.set_caption("Ping Pong ! Server")
             host = server
-        else:  # client
+        else:       # client
             pygame.display.set_caption("Ping Pong ! Client")
         gameOver = False
 
@@ -293,7 +296,7 @@ class PingPong:
                 break
 
             player.point = ball.player_point
-            self.scoreBoard(player.point, competitor.point)
+            self.renderScoreBoard(player.point, competitor.point)
 
             ball.render()
             player.render()
@@ -307,6 +310,6 @@ class PingPong:
 
 if __name__ == "__main__":
     game = PingPong()
-    CommandLine()
+    showDeviceInfo()
     while True:
         game.start()
