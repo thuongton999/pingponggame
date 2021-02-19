@@ -98,7 +98,7 @@ def Prompt():
                     exit/quit  - Exits the shell
                     help       - Prints this help page""")
         else:
-            print("Command '" + command + "' not found\nType 'help' for help.\n\n")
+            print("Command '" + command + "' not found\nType 'help' for help.\n")
     return connection.HOST, False
 
 
