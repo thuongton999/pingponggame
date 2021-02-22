@@ -145,7 +145,7 @@ class Player:
         self.speed = 5
         self.point = 0
 
-    def sendingRequest(self, host, ball_location):
+    def sendRequest(self, host, ball_location):
         try:
             location = "%s %s %s %s" % (self.location[1], ball_location[0], ball_location[1], self.point)
             host.sendall(location.encode("utf-8"))
@@ -173,7 +173,7 @@ class Competitor:
         self.point = 0
         self.requestErrors = 0
 
-    def handlingRequest(self, client):
+    def handleRequest(self, client):
         try:
             data_received = client.recv(128).decode("utf-8")
             location = data_received.split()
@@ -273,7 +273,7 @@ class PingPong:
             elif player.location[1] >= BOTTOM - player.HEIGHT:
                 player.location[1] = BOTTOM - player.HEIGHT
 
-            # if this device host is server
+            # if this host is server
             if server:
                 # if ball is collision
                 ball.location[0] += ball.speed[0]
@@ -285,8 +285,8 @@ class PingPong:
             ball_parameters = (player, competitor, TOP, BOTTOM, LEFT, RIGHT)
             ball_collision = threading.Thread(target=ball.isCollision, args=ball_parameters)
 
-            handling = threading.Thread(target=competitor.handlingRequest, args=(host,))
-            sending = threading.Thread(target=player.sendingRequest, args=(host, ball.location))
+            handling = threading.Thread(target=competitor.handleRequest, args=(host,))
+            sending = threading.Thread(target=player.sendRequest, args=(host, ball.location))
 
             handling.start()
             sending.start()
